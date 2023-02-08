@@ -1,4 +1,5 @@
 #!/bin/python3
+import re
 
 
 def validate_html(html):
@@ -11,11 +12,32 @@ def validate_html(html):
     False
     '''
 
-    # HINT:
-    # use the _extract_tags function below to generate a list of html tags without any extra text;
-    # then process these html tags using the balanced parentheses algorithm from the class/book
-    # the main difference between your code and the code from class will be that you will have to keep track of not just the 3 types of parentheses,
-    # but arbitrary text located between the html tags
+
+    if len(html) == 0:
+        return True
+    tags = _extract_tags(html)
+    if not tags:
+        return False
+    
+    tag_stack = []
+    index = 0 
+    while index<len(tags):
+        tag = tags[index]
+        tag_name = tag[1:-1]
+        if "/" not in tag:
+                tag_stack.append(tag)
+        else:
+            if len(tag_stack) == 0:
+                return False
+            lasttag = tag_stack.pop()
+            if not lasttag == tag_name[1:]: 
+                return False
+        index += 1 
+
+
+
+
+
 
 
 def _extract_tags(html):
@@ -29,3 +51,8 @@ def _extract_tags(html):
     >>> _extract_tags('Python <strong>rocks</strong>!')
     ['<strong>', '</strong>']
     '''
+
+    tags=re.findall(r'<[^>]+>', html) 
+    return tags
+
+
